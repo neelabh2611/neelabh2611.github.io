@@ -2,17 +2,20 @@ const glow = document.createElement('div');
 glow.className = 'cursor-glow';
 document.body.appendChild(glow);
 
-let pointerVisible = false;
-
 function moveGlow(x, y) {
   glow.style.transform = `translate(${x}px, ${y}px)`;
   glow.style.opacity = '1';
-  pointerVisible = true;
 }
 
 function hideGlow() {
   glow.style.opacity = '0';
-  pointerVisible = false;
+}
+
+function setCursorMode(mode) {
+  document.body.classList.remove('link-cursor', 'text-cursor');
+  if (mode) {
+    document.body.classList.add(mode);
+  }
 }
 
 document.addEventListener('pointermove', (event) => {
@@ -50,14 +53,21 @@ document.addEventListener('touchmove', (event) => {
 
 document.addEventListener('touchend', hideGlow);
 
-document.querySelectorAll('a, button, .primary-btn, .secondary-btn, .header-text, main').forEach((element) => {
+document.querySelectorAll('a, button, .primary-btn, .secondary-btn, .header-text').forEach((element) => {
   element.addEventListener('pointerenter', () => {
+    setCursorMode('link-cursor');
     glow.classList.add('cursor-glow-hover');
   });
 
   element.addEventListener('pointerleave', () => {
+    setCursorMode('');
     glow.classList.remove('cursor-glow-hover');
   });
+});
+
+document.querySelectorAll('input, textarea, select').forEach((element) => {
+  element.addEventListener('focus', () => setCursorMode('text-cursor'));
+  element.addEventListener('blur', () => setCursorMode(''));
 });
 
 hideGlow();

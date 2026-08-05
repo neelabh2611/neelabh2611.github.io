@@ -12,6 +12,10 @@
   --spidey-panel-soft: rgba(16, 24, 32, 0.8);
   --spidey-ink: #eef3f9;
   --spidey-line: rgba(255, 255, 255, 0.12);
+
+  --cursor-default: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200' shape-rendering='crispEdges'%3E%3Cpath d='M18 20L148 92L104 100L90 180L58 150L66 100L18 92Z' fill='%23ffffff' stroke='%23000000' stroke-width='10' stroke-linejoin='miter'/%3E%3Cpath d='M44 52L110 96L82 100L74 144L58 128L64 100L44 86Z' fill='%23000000'/%3E%3Cpath d='M50 86L68 86L68 102L50 102Z' fill='%23ffffff'/%3E%3Cpath d='M80 86L98 86L98 102L80 102Z' fill='%23ffffff'/%3E%3Cpath d='M54 110L72 112L70 128L54 126Z' fill='%23ffffff'/%3E%3Cpath d='M78 110L96 112L98 128L80 126Z' fill='%23ffffff'/%3E%3C/svg%3E") 22 12, auto;
+  --cursor-link: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200' shape-rendering='crispEdges'%3E%3Cpath d='M18 20L148 92L104 100L90 180L58 150L66 100L18 92Z' fill='%23ffffff' stroke='%23000000' stroke-width='10' stroke-linejoin='miter'/%3E%3Cpath d='M44 52L110 96L82 100L74 144L58 128L64 100L44 86Z' fill='%23000000'/%3E%3Cpath d='M50 86L68 86L68 102L50 102Z' fill='%23ffffff'/%3E%3Cpath d='M80 86L98 86L98 102L80 102Z' fill='%23ffffff'/%3E%3Cpath d='M54 110L72 112L70 128L54 126Z' fill='%23ffffff'/%3E%3Cpath d='M78 110L96 112L98 128L80 126Z' fill='%23ffffff'/%3E%3C/svg%3E") 22 12, pointer;
+  --cursor-text: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200' shape-rendering='crispEdges'%3E%3Cpath d='M58 24H142V176H58Z' fill='%23ffffff' stroke='%23000000' stroke-width='10'/%3E%3Cpath d='M74 44H126V138H74Z' fill='%23000000'/%3E%3Cpath d='M78 64H122M78 88H122M78 112H122M78 136H122' stroke='%23ffffff' stroke-width='10' stroke-linecap='square'/%3E%3C/svg%3E") 18 18, text;
 }
 
 * {
@@ -33,7 +37,15 @@ body {
   margin: 0;
   min-height: 100vh;
   letter-spacing: 0.01em;
-  cursor: none;
+  cursor: var(--cursor-default);
+}
+
+body.link-cursor {
+  cursor: var(--cursor-link);
+}
+
+body.text-cursor {
+  cursor: var(--cursor-text);
 }
 
 .cursor-glow {
@@ -65,10 +77,6 @@ body {
 }
 
 @media (pointer: coarse) {
-  body {
-    cursor: auto;
-  }
-
   .cursor-glow {
     display: none;
   }
@@ -133,10 +141,18 @@ a {
   color: #fca5a5;
   text-decoration: none;
   transition: color 0.2s ease, transform 0.2s ease;
+  cursor: var(--cursor-link);
 }
 
 a:hover {
   color: #fee2e2;
+}
+
+button,
+input,
+textarea,
+select {
+  cursor: var(--cursor-text);
 }
 
 header {
