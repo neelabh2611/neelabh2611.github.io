@@ -1,124 +1,267 @@
 /* This file controls how everything LOOKS.
    Change a value, save, and refresh your browser to see what happens. */
 
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap');
 
-/* Load a font from Google Fonts */
-@import url('https://fonts.googleapis.com/css?family=Work+Sans:400,700&display=swap');
-
-
-/* Rules for the whole page */
+:root {
+  --spidey-red: #e31b23;
+  --spidey-red-dark: #9f1017;
+  --spidey-blue: #1d4ed8;
+  --spidey-blue-dark: #0f172a;
+  --spidey-sky: #dbeafe;
+  --spidey-white: #f8fafc;
+  --spidey-black: #111827;
+  --spidey-gold: #fbbf24;
+}
 
 body {
-  font-family: "Work Sans", sans-serif;
+  font-family: "Archivo", sans-serif;
   font-size: 18px;
-  line-height: 1.6;
-  background: #E0E7FF;   /* page background color — try changing this! */
-  color: #333333;        /* text color */
+  line-height: 1.7;
+  background:
+    radial-gradient(circle at top, rgba(59, 130, 246, 0.35), transparent 35%),
+    linear-gradient(180deg, #0a1020 0%, #101b32 50%, #07111d 100%);
+  color: var(--spidey-white);
   margin: 0;
+  min-height: 100vh;
 }
 
-
-/* Headings */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 22px 22px;
+  pointer-events: none;
+}
 
 h1, h2, h3 {
-  color: #1D1F50;
+  color: var(--spidey-white);
+  letter-spacing: 0.04em;
 }
 
+h1 {
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 1.1;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 3px 3px 0 var(--spidey-red), 6px 6px 0 rgba(13, 36, 120, 0.9);
+}
 
-/* Links */
+h2 {
+  color: #dbeafe;
+  border-bottom: 2px solid rgba(227, 27, 35, 0.7);
+  padding-bottom: 8px;
+  margin-top: 32px;
+}
+
+p {
+  margin: 14px 0;
+}
+
+ul {
+  padding-left: 1.2rem;
+}
+
+li {
+  margin: 10px 0;
+}
 
 a {
-  color: #FF4343;        /* the accent color */
+  color: #fca5a5;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-
-/* The bar at the top */
+a:hover {
+  color: #fee2e2;
+}
 
 header {
-  max-width: 640px;
-  margin: auto;
-  padding: 20px;
-  font-weight: 700;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 20px 10px;
+  font-weight: 800;
 }
 
 .header-text {
-  color: #1D1F50;
+  display: inline-block;
+  color: var(--spidey-white);
   text-decoration: none;
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, var(--spidey-red), var(--spidey-blue));
+  padding: 12px 18px;
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(227, 27, 35, 0.35);
 }
-
-
-/* The white box that holds your content */
 
 main {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px 40px 40px 40px;
-  background: #ffffff;
-  border-radius: 8px;
+  max-width: 760px;
+  margin: 20px auto 40px;
+  padding: 28px 32px 40px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 3px solid rgba(59, 130, 246, 0.9);
+  border-radius: 18px;
+  box-shadow: 0 0 0 4px rgba(227, 27, 35, 0.7), 0 20px 50px rgba(0, 0, 0, 0.35);
+  position: relative;
+  z-index: 1;
 }
 
+main::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  pointer-events: none;
+}
 
-/* Pictures never overflow the box */
+.hero {
+  margin-bottom: 24px;
+  padding: 12px 0 8px;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin: 0 0 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(227, 27, 35, 0.2);
+  border: 1px solid rgba(252, 165, 165, 0.5);
+  color: #fecaca;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.intro {
+  color: #dbeafe;
+  font-size: 1.15rem;
+  max-width: 60ch;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.primary-btn,
+.secondary-btn {
+  display: inline-block;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, var(--spidey-red), #ef4444);
+  color: white;
+  box-shadow: 0 10px 24px rgba(227, 27, 35, 0.35);
+}
+
+.secondary-btn {
+  background: linear-gradient(135deg, var(--spidey-blue), #2563eb);
+  color: white;
+  box-shadow: 0 10px 24px rgba(59, 130, 246, 0.35);
+}
+
+.feature-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.feature-list li {
+  position: relative;
+  padding-left: 28px;
+  color: #e2e8f0;
+}
+
+.feature-list li::before {
+  content: "🕷️";
+  position: absolute;
+  left: 0;
+  top: 0;
+}
 
 main img {
   max-width: 100%;
-  border-radius: 4px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
 }
 
 .image-caption {
   font-style: italic;
-  opacity: 0.6;
+  opacity: 0.8;
+  color: #cbd5e1;
 }
 
 .date {
-  opacity: 0.6;
+  opacity: 0.8;
+  color: #cbd5e1;
 }
-
-
-/* Quotes */
 
 blockquote {
-  border-left: 4px solid #FF4343;
+  border-left: 5px solid var(--spidey-red);
   margin-left: 0;
-  padding-left: 16px;
+  padding: 12px 18px;
   font-size: 120%;
+  background: rgba(15, 23, 42, 0.7);
+  border-radius: 0 10px 10px 0;
+  color: #f8fafc;
 }
-
-
-/* The footer at the bottom */
 
 footer {
-  max-width: 640px;
+  max-width: 760px;
   margin: auto;
-  padding: 20px;
+  padding: 20px 20px 40px;
   text-align: center;
-  font-size: 80%;
+  font-size: 0.9rem;
+  color: #dbeafe;
 }
 
-
-/* The beating heart */
+footer a {
+  color: #fca5a5;
+  font-weight: 700;
+}
 
 .heart {
-  color: #FF4343;
+  color: var(--spidey-red);
   animation: beat 1s infinite;
 }
 
 @keyframes beat {
-  50% { opacity: 0.5; }
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
 }
 
-
-/* Anything below this only applies to small screens (phones) */
-
 @media only screen and (max-width: 600px) {
-
   body {
-    background: #ffffff;
+    background: #0b1220;
   }
 
   main {
-    padding: 10px 5% 40px 5%;
-    border-radius: 0;
+    margin: 12px 12px 28px;
+    padding: 20px 18px 28px;
+    border-radius: 14px;
   }
 
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+    text-align: center;
+  }
 }
