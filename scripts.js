@@ -8,7 +8,8 @@ document.body.appendChild(trail);
 let lastSparkleTime = 0;
 
 function moveGlow(x, y) {
-  glow.style.transform = `translate(${x}px, ${y}px)`;
+  const offset = glow.offsetWidth / 2;
+  glow.style.transform = `translate(${x - offset}px, ${y - offset}px)`;
   glow.style.opacity = '1';
 }
 
@@ -34,7 +35,6 @@ function addSparkle(x, y) {
   setTimeout(() => sparkle.remove(), 1500);
 }
 
-<<<<<<< HEAD
 function addRipple(x, y, width = 44, height = 44) {
   const ripple = document.createElement('span');
   ripple.className = 'cursor-focus-ripple';
@@ -56,8 +56,6 @@ function addFocusRipple(element) {
   );
 }
 
-=======
->>>>>>> parent of e8950fb (meta)
 function setCursorMode(mode) {
   document.body.classList.remove('link-cursor', 'text-cursor');
   if (mode) {
@@ -68,7 +66,7 @@ function setCursorMode(mode) {
 document.addEventListener('pointermove', (event) => {
   const x = event.clientX;
   const y = event.clientY;
-  moveGlow(x - 120, y - 120);
+  moveGlow(x, y);
   addSparkle(x, y);
 });
 
@@ -76,14 +74,10 @@ document.addEventListener('pointerdown', (event) => {
   glow.classList.add('cursor-glow-active');
   const x = event.clientX;
   const y = event.clientY;
-<<<<<<< HEAD
   moveGlow(x, y);
   if (event.pointerType === 'touch') {
     addRipple(x, y);
   }
-=======
-  moveGlow(x - 120, y - 120);
->>>>>>> parent of e8950fb (meta)
 });
 
 document.addEventListener('pointerup', () => {
@@ -95,18 +89,30 @@ document.addEventListener('pointerleave', hideGlow);
 document.addEventListener('touchstart', (event) => {
   const touch = event.touches[0];
   if (touch) {
-    moveGlow(touch.clientX - 120, touch.clientY - 120);
+    moveGlow(touch.clientX, touch.clientY);
+    addSparkle(touch.clientX, touch.clientY);
   }
 }, { passive: true });
 
 document.addEventListener('touchmove', (event) => {
   const touch = event.touches[0];
   if (touch) {
-    moveGlow(touch.clientX - 120, touch.clientY - 120);
+    moveGlow(touch.clientX, touch.clientY);
+    addSparkle(touch.clientX, touch.clientY);
   }
 }, { passive: true });
 
 document.addEventListener('touchend', hideGlow);
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Tab') {
+    document.body.classList.add('keyboard-nav');
+  }
+});
+
+document.addEventListener('pointerdown', () => {
+  document.body.classList.remove('keyboard-nav');
+});
 
 document.querySelectorAll('a, button, .primary-btn, .secondary-btn, .header-text').forEach((element) => {
   element.addEventListener('pointerenter', () => {
@@ -117,6 +123,12 @@ document.querySelectorAll('a, button, .primary-btn, .secondary-btn, .header-text
   element.addEventListener('pointerleave', () => {
     setCursorMode('');
     glow.classList.remove('cursor-glow-hover');
+  });
+
+  element.addEventListener('focus', () => {
+    if (document.body.classList.contains('keyboard-nav')) {
+      addFocusRipple(element);
+    }
   });
 });
 

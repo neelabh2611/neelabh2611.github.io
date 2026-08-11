@@ -83,6 +83,29 @@ body.text-cursor {
   animation: sparkle-fade 1.5s ease-out forwards;
 }
 
+.cursor-focus-ripple {
+  position: fixed;
+  border: 2px solid rgba(120, 255, 172, 0.9);
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 14px rgba(61, 214, 136, 0.72);
+  animation: focus-ripple 0.7s ease-out forwards;
+}
+
+@keyframes focus-ripple {
+  0% {
+    opacity: 0.95;
+    scale: 0.72;
+  }
+
+  100% {
+    opacity: 0;
+    scale: 1.45;
+  }
+}
+
 @keyframes sparkle-fade {
   0% {
     opacity: 0;
@@ -115,7 +138,17 @@ body.text-cursor {
 
 @media (pointer: coarse) {
   .cursor-glow {
-    display: none;
+    width: 120px;
+    height: 120px;
+    filter: blur(14px);
+  }
+
+  .cursor-trail {
+    z-index: 9999;
+  }
+
+  .cursor-sparkle {
+    box-shadow: 0 0 6px 1px hsl(var(--sparkle-hue) 100% 68%);
   }
 }
 
