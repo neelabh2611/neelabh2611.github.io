@@ -35,8 +35,12 @@ function addSparkle(x, y) {
   setTimeout(() => sparkle.remove(), 1500);
 }
 
+<<<<<<< HEAD
 function addFocusRipple(element) {
   const bounds = element.getBoundingClientRect();
+=======
+function addRipple(x, y, width = 44, height = 44) {
+>>>>>>> parent of 75c8072 (h)
   const ripple = document.createElement('span');
   ripple.className = 'cursor-focus-ripple';
   ripple.style.left = `${bounds.left + bounds.width / 2}px`;
@@ -47,6 +51,19 @@ function addFocusRipple(element) {
   ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
 }
 
+<<<<<<< HEAD
+=======
+function addFocusRipple(element) {
+  const bounds = element.getBoundingClientRect();
+  addRipple(
+    bounds.left + bounds.width / 2,
+    bounds.top + bounds.height / 2,
+    bounds.width,
+    bounds.height,
+  );
+}
+
+>>>>>>> parent of 75c8072 (h)
 function setCursorMode(mode) {
   document.body.classList.remove('link-cursor', 'text-cursor');
   if (mode) {
@@ -66,6 +83,12 @@ document.addEventListener('pointerdown', (event) => {
   const x = event.clientX;
   const y = event.clientY;
   moveGlow(x, y);
+<<<<<<< HEAD
+=======
+  if (event.pointerType === 'touch') {
+    addRipple(x, y);
+  }
+>>>>>>> parent of 75c8072 (h)
 });
 
 document.addEventListener('pointerup', () => {
