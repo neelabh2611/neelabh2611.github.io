@@ -36,13 +36,24 @@ body {
   text-align: center;
   letter-spacing: 1.7em;
   background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 30%),
-    linear-gradient(180deg, #060a0e 0%, #0b1218 42%, #05080d 100%);
+    radial-gradient(ellipse at 50% 8%, rgba(169, 220, 214, 0.14), transparent 30%),
+    repeating-linear-gradient(174deg, rgba(184, 229, 222, 0.035) 0 1px, transparent 1px 12px),
+    repeating-linear-gradient(6deg, rgba(76, 145, 149, 0.045) 0 2px, transparent 2px 27px),
+    linear-gradient(180deg, #07181d 0%, #0a2529 45%, #041116 100%);
   color: var(--spidey-ink);
   margin: 0;
   min-height: 100vh;
   letter-spacing: 0.01em;
   cursor: var(--cursor-default);
+}
+
+body.audio-reactive::before {
+  opacity: calc(0.72 + var(--voice-energy, 0) * 0.22);
+  filter: brightness(calc(1 + var(--voice-energy, 0) * 0.16));
+}
+
+body.audio-reactive::after {
+  opacity: calc(0.48 + var(--voice-energy, 0) * 0.18);
 }
 
 body::before {
@@ -53,8 +64,9 @@ body::before {
   background:
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    radial-gradient(circle at 50% -12%, rgba(217, 20, 28, 0.3) 0 2%, transparent 18%);
-  background-size: 24px 24px, 24px 24px, 100% 100%;
+    radial-gradient(circle at 50% -12%, rgba(217, 20, 28, 0.3) 0 2%, transparent 18%),
+    repeating-linear-gradient(12deg, transparent 0 46px, rgba(179, 235, 225, 0.04) 47px, transparent 49px);
+  background-size: 24px 24px, 24px 24px, 100% 100%, 100% 100%;
   -webkit-mask-image: radial-gradient(ellipse at top, black 0%, transparent 64%);
   mask-image: radial-gradient(ellipse at top, black 0%, transparent 64%);
   z-index: 0;
@@ -67,8 +79,9 @@ body::after {
   pointer-events: none;
   background:
     radial-gradient(circle at 50% 30%, rgba(217, 20, 28, 0.14), transparent 30%),
-    repeating-conic-gradient(from 0deg at 50% -8%, transparent 0deg 9deg, rgba(255, 255, 255, 0.035) 9.5deg 10deg, transparent 10.5deg 20deg);
-  opacity: 0.55;
+    repeating-conic-gradient(from 0deg at 50% -8%, transparent 0deg 9deg, rgba(255, 255, 255, 0.035) 9.5deg 10deg, transparent 10.5deg 20deg),
+    linear-gradient(102deg, transparent 0 47%, rgba(190, 240, 230, 0.05) 49%, transparent 51% 100%);
+  opacity: 0.48;
   z-index: 0;
 }
 
@@ -103,6 +116,81 @@ body.text-cursor {
   z-index: 9998;
   overflow: hidden;
   mix-blend-mode: screen;
+}
+
+.beat-machine {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  width: min(310px, calc(100vw - 36px));
+  padding: 13px 14px 14px;
+  border: 1px solid rgba(255, 190, 214, 0.28);
+  border-radius: 12px;
+  background: rgba(5, 18, 22, 0.88);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4), inset 0 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  z-index: 10001;
+  text-align: left;
+}
+
+.beat-machine-head,
+.beat-machine-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.beat-machine-kicker {
+  color: #ffd2e2;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.beat-status {
+  color: rgba(238, 243, 249, 0.62);
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+.beat-machine-controls {
+  justify-content: flex-start;
+  margin-top: 11px;
+}
+
+.beat-machine button {
+  min-height: 32px;
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 190, 214, 0.28);
+  border-radius: 6px;
+  background: rgba(255, 143, 187, 0.08);
+  color: #fff0f6;
+  font: inherit;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.beat-machine button:hover,
+.beat-machine button.is-active {
+  background: rgba(255, 143, 187, 0.24);
+  border-color: rgba(255, 190, 214, 0.62);
+}
+
+.voice-glow-toggle {
+  color: #ffd7e5;
+}
+
+@media (min-width: 760px) {
+  body::before {
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 50% -12%, rgba(217, 20, 28, 0.3) 0 2%, transparent 18%),
+      linear-gradient(90deg, transparent 0 49.95%, rgba(255, 190, 214, 0.1) 50%, transparent 50.05%);
+    background-size: 24px 24px, 24px 24px, 100% 100%, 100% 100%;
+  }
 }
 
 .blossom-layer {
@@ -190,24 +278,53 @@ body.text-cursor {
 
 .cursor-focus-ripple {
   position: fixed;
-  border: 2px solid rgba(255, 185, 211, 0.62);
+  border: 1px solid rgba(255, 218, 234, 0.7);
   border-radius: 999px;
   pointer-events: none;
   z-index: 10000;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 12px rgba(244, 140, 181, 0.42);
-  animation: focus-ripple 0.7s ease-out forwards;
+  box-shadow: 0 0 12px rgba(244, 140, 181, 0.38), inset 0 0 8px rgba(255, 220, 235, 0.28);
+  animation: pond-ripple 1s cubic-bezier(0.18, 0.72, 0.3, 1) forwards;
 }
 
-@keyframes focus-ripple {
+ .cursor-focus-ripple::before,
+ .cursor-focus-ripple::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: inherit;
+  border-radius: inherit;
+  opacity: 0.7;
+  animation: pond-ripple-ring 1s ease-out forwards;
+}
+
+ .cursor-focus-ripple::after {
+  inset: 7px;
+  opacity: 0.45;
+  animation-delay: 0.06s;
+}
+
+@keyframes pond-ripple {
   0% {
-    opacity: 0.95;
-    scale: 0.72;
+    opacity: 0.8;
+    scale: 0.55 0.35;
   }
 
   100% {
     opacity: 0;
-    scale: 1.45;
+    scale: 2.8 1.55;
+  }
+}
+
+@keyframes pond-ripple-ring {
+  0% {
+    opacity: 0.7;
+    scale: 0.7;
+  }
+
+  100% {
+    opacity: 0;
+    scale: 1.8;
   }
 }
 
