@@ -45,6 +45,33 @@ body {
   cursor: var(--cursor-default);
 }
 
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    radial-gradient(circle at 50% -12%, rgba(217, 20, 28, 0.3) 0 2%, transparent 18%);
+  background-size: 24px 24px, 24px 24px, 100% 100%;
+  -webkit-mask-image: radial-gradient(ellipse at top, black 0%, transparent 64%);
+  mask-image: radial-gradient(ellipse at top, black 0%, transparent 64%);
+  z-index: 0;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(217, 20, 28, 0.14), transparent 30%),
+    repeating-conic-gradient(from 0deg at 50% -8%, transparent 0deg 9deg, rgba(255, 255, 255, 0.035) 9.5deg 10deg, transparent 10.5deg 20deg);
+  opacity: 0.55;
+  z-index: 0;
+}
+
 body.link-cursor {
   cursor: var(--cursor-link);
 }
@@ -64,7 +91,7 @@ body.text-cursor {
   z-index: 9999;
   opacity: 0;
   transition: opacity 0.12s ease, filter 0.12s ease;
-  background: radial-gradient(circle, rgba(120, 255, 172, 0.72) 0%, rgba(61, 214, 136, 0.46) 20%, rgba(51, 209, 170, 0.22) 42%, rgba(51, 209, 170, 0.08) 62%, transparent 72%);
+  background: radial-gradient(circle, rgba(255, 205, 224, 0.34) 0%, rgba(244, 140, 181, 0.2) 20%, rgba(225, 100, 151, 0.1) 42%, rgba(225, 100, 151, 0.035) 62%, transparent 72%);
   filter: blur(24px);
   mix-blend-mode: screen;
 }
@@ -163,12 +190,12 @@ body.text-cursor {
 
 .cursor-focus-ripple {
   position: fixed;
-  border: 2px solid rgba(120, 255, 172, 0.9);
+  border: 2px solid rgba(255, 185, 211, 0.62);
   border-radius: 999px;
   pointer-events: none;
   z-index: 10000;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 14px rgba(61, 214, 136, 0.72);
+  box-shadow: 0 0 12px rgba(244, 140, 181, 0.42);
   animation: focus-ripple 0.7s ease-out forwards;
 }
 
@@ -193,7 +220,7 @@ body.text-cursor {
   width: 300px;
   height: 300px;
   filter: blur(36px);
-  background: radial-gradient(circle, rgba(178, 255, 200, 0.82) 0%, rgba(81, 255, 154, 0.58) 20%, rgba(80, 230, 165, 0.26) 44%, rgba(80, 230, 165, 0.08) 62%, transparent 76%);
+  background: radial-gradient(circle, rgba(255, 221, 234, 0.46) 0%, rgba(255, 170, 201, 0.28) 20%, rgba(225, 100, 151, 0.12) 44%, rgba(225, 100, 151, 0.035) 62%, transparent 76%);
 }
 
 @media (pointer: coarse) {
@@ -207,25 +234,6 @@ body.text-cursor {
     z-index: 9999;
   }
 
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 24px 24px;
-  pointer-events: none;
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 50% 30%, rgba(217, 20, 28, 0.14), transparent 30%);
-  pointer-events: none;
 }
 
 h1, h2, h3 {
@@ -300,7 +308,18 @@ header {
   border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 12px 18px;
   border-radius: 999px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(217, 20, 28, 0.32);
+  position: relative;
+}
+
+.header-text::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(217, 20, 28, 0.35);
+  border-radius: inherit;
+  clip-path: polygon(0 0, 35% 0, 18% 100%, 0 100%);
+  pointer-events: none;
 }
 
 main {
@@ -324,6 +343,20 @@ main::before {
   inset: 12px;
   border: 2px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
+  pointer-events: none;
+}
+
+main::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 130px;
+  height: 130px;
+  opacity: 0.35;
+  background:
+    repeating-radial-gradient(circle at 100% 0, transparent 0 18px, rgba(255, 255, 255, 0.18) 19px 20px, transparent 21px 30px),
+    linear-gradient(135deg, transparent 49%, rgba(217, 20, 28, 0.7) 50% 51%, transparent 52%);
   pointer-events: none;
 }
 
