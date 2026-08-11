@@ -58,10 +58,47 @@ body.text-cursor {
   pointer-events: none;
   z-index: 9999;
   opacity: 0;
-  transition: opacity 0.2s ease, transform 0.1s linear, filter 0.2s ease;
+  transition: opacity 0.12s ease, filter 0.12s ease;
   background: radial-gradient(circle, rgba(120, 255, 172, 0.72) 0%, rgba(61, 214, 136, 0.46) 20%, rgba(51, 209, 170, 0.22) 42%, rgba(51, 209, 170, 0.08) 62%, transparent 72%);
   filter: blur(24px);
   mix-blend-mode: screen;
+}
+
+.cursor-trail {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  overflow: hidden;
+  mix-blend-mode: screen;
+}
+
+.cursor-sparkle {
+  position: absolute;
+  width: var(--sparkle-size);
+  height: var(--sparkle-size);
+  background: hsl(var(--sparkle-hue) 100% 78%);
+  box-shadow: 0 0 8px 2px hsl(var(--sparkle-hue) 100% 68%);
+  transform: translate(-50%, -50%) rotate(45deg);
+  animation: sparkle-fade 1.5s ease-out forwards;
+}
+
+@keyframes sparkle-fade {
+  0% {
+    opacity: 0;
+    scale: 0.2;
+  }
+
+  12% {
+    opacity: 1;
+    scale: 1;
+  }
+
+  100% {
+    opacity: 0;
+    scale: 0;
+    translate: var(--sparkle-drift-x) var(--sparkle-drift-y);
+  }
 }
 
 .cursor-glow-active {
