@@ -35,25 +35,16 @@ function addSparkle(x, y) {
   setTimeout(() => sparkle.remove(), 1500);
 }
 
-function addRipple(x, y, width = 44, height = 44) {
-  const ripple = document.createElement('span');
-  ripple.className = 'cursor-focus-ripple';
-  ripple.style.left = `${x}px`;
-  ripple.style.top = `${y}px`;
-  ripple.style.width = `${Math.max(width, 44)}px`;
-  ripple.style.height = `${Math.max(height, 44)}px`;
-  trail.appendChild(ripple);
-  ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
-}
-
 function addFocusRipple(element) {
   const bounds = element.getBoundingClientRect();
-  addRipple(
-    bounds.left + bounds.width / 2,
-    bounds.top + bounds.height / 2,
-    bounds.width,
-    bounds.height,
-  );
+  const ripple = document.createElement('span');
+  ripple.className = 'cursor-focus-ripple';
+  ripple.style.left = `${bounds.left + bounds.width / 2}px`;
+  ripple.style.top = `${bounds.top + bounds.height / 2}px`;
+  ripple.style.width = `${Math.max(bounds.width, 44)}px`;
+  ripple.style.height = `${Math.max(bounds.height, 44)}px`;
+  trail.appendChild(ripple);
+  ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
 }
 
 function setCursorMode(mode) {
@@ -75,9 +66,6 @@ document.addEventListener('pointerdown', (event) => {
   const x = event.clientX;
   const y = event.clientY;
   moveGlow(x, y);
-  if (event.pointerType === 'touch') {
-    addRipple(x, y);
-  }
 });
 
 document.addEventListener('pointerup', () => {
