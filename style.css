@@ -1,7 +1,9 @@
 /* This file controls how everything LOOKS.
    Change a value, save, and refresh your browser to see what happens. */
 
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap');
+
 
 :root {
   --spidey-red: #d9141c;
@@ -27,9 +29,12 @@ html {
 }
 
 body {
-  font-family: "Archivo", sans-serif;
+  font-family: "Bitcount Prop Single", sans-serif;
   font-size: 18px;
+  font-weight: 400;
   line-height: 1.7;
+  text-align: center;
+  letter-spacing: 1.7em;
   background:
     radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 30%),
     linear-gradient(180deg, #060a0e 0%, #0b1218 42%, #05080d 100%);
@@ -73,14 +78,87 @@ body.text-cursor {
   mix-blend-mode: screen;
 }
 
-.cursor-sparkle {
+.blossom-layer {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cherry-blossom {
   position: absolute;
-  width: var(--sparkle-size);
-  height: var(--sparkle-size);
-  background: hsl(var(--sparkle-hue) 100% 78%);
-  box-shadow: 0 0 8px 2px hsl(var(--sparkle-hue) 100% 68%);
-  transform: translate(-50%, -50%) rotate(45deg);
-  animation: sparkle-fade 1.5s ease-out forwards;
+  top: -8vh;
+  width: var(--blossom-size);
+  height: var(--blossom-size);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 17%, #ffd9e8 0 28%, transparent 30%),
+    radial-gradient(circle at 83% 50%, #ffb4d1 0 28%, transparent 30%),
+    radial-gradient(circle at 67% 84%, #ff9fc4 0 28%, transparent 30%),
+    radial-gradient(circle at 33% 84%, #ffb4d1 0 28%, transparent 30%),
+    radial-gradient(circle at 17% 50%, #ffd9e8 0 28%, transparent 30%);
+  filter: drop-shadow(0 0 4px rgba(255, 154, 195, 0.55));
+  opacity: 0.78;
+  animation: blossom-fall var(--blossom-duration) linear var(--blossom-delay) infinite;
+  will-change: transform;
+}
+
+@keyframes blossom-fall {
+  0% {
+    transform: translate3d(0, -12vh, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate3d(var(--blossom-sway), 52vh, 0) rotate(calc(var(--blossom-spin) * 0.45));
+  }
+
+  100% {
+    transform: translate3d(calc(var(--blossom-sway) * -0.6), 115vh, 0) rotate(var(--blossom-spin));
+  }
+}
+
+.cursor-trail-blossom {
+  position: absolute;
+  width: var(--trail-size);
+  height: var(--trail-size);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 17%, #ffe5f0 0 29%, transparent 31%),
+    radial-gradient(circle at 83% 50%, #ffb4d1 0 29%, transparent 31%),
+    radial-gradient(circle at 67% 84%, #ff8fbb 0 29%, transparent 31%),
+    radial-gradient(circle at 33% 84%, #ffb4d1 0 29%, transparent 31%),
+    radial-gradient(circle at 17% 50%, #ffe5f0 0 29%, transparent 31%);
+  filter: drop-shadow(0 0 4px rgba(255, 126, 181, 0.8));
+  animation: trail-blossom-fall 1s ease-out forwards;
+}
+
+.cursor-trail-blossom::after {
+  content: "";
+  position: absolute;
+  top: 42%;
+  left: 43%;
+  width: 14%;
+  height: 14%;
+  border-radius: 50%;
+  background: #b94d80;
+}
+
+@keyframes trail-blossom-fall {
+  0% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(0.55) rotate(0deg);
+  }
+
+  18% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(20deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--trail-drift)), calc(-50% + var(--trail-fall))) scale(0.72) rotate(var(--trail-spin));
+  }
 }
 
 .cursor-focus-ripple {
@@ -103,24 +181,6 @@ body.text-cursor {
   100% {
     opacity: 0;
     scale: 1.45;
-  }
-}
-
-@keyframes sparkle-fade {
-  0% {
-    opacity: 0;
-    scale: 0.2;
-  }
-
-  12% {
-    opacity: 1;
-    scale: 1;
-  }
-
-  100% {
-    opacity: 0;
-    scale: 0;
-    translate: var(--sparkle-drift-x) var(--sparkle-drift-y);
   }
 }
 
@@ -147,9 +207,6 @@ body.text-cursor {
     z-index: 9999;
   }
 
-  .cursor-sparkle {
-    box-shadow: 0 0 6px 1px hsl(var(--sparkle-hue) 100% 68%);
-  }
 }
 
 body::before {
@@ -428,7 +485,6 @@ footer a {
   .header-text {
     letter-spacing: 0.12em;
   }
-}
 
   .primary-btn,
   .secondary-btn {
