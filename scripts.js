@@ -339,9 +339,22 @@ document.addEventListener('touchmove', (event) => {
 
 document.addEventListener('touchend', hideGlow);
 
+const padKeyMap = {
+  q: 'highBass',
+  e: 'highHat',
+  a: 'deepBass',
+  d: 'lowHat',
+};
+
 document.addEventListener('keydown', (event) => {
+  const key = event.key.toLowerCase();
   if (event.key === 'Tab') {
     document.body.classList.add('keyboard-nav');
+  }
+  if (event.repeat) return;
+  if (padKeyMap[key]) {
+    event.preventDefault();
+    playSound(padKeyMap[key]);
   }
 });
 

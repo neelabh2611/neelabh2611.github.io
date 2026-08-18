@@ -166,15 +166,15 @@
   display: grid;
   gap: 9px;
   margin-top: 22px;
-  overflow-x: auto;
+  overflow-x: hidden;
   padding-bottom: 3px;
 }
 
 .step-row {
   display: grid;
-  grid-template-columns: 88px repeat(16, minmax(24px, 1fr));
+  grid-template-columns: 88px repeat(16, minmax(0, 1fr));
   gap: 5px;
-  min-width: 530px;
+  min-width: 0;
 }
 
 .track-label {

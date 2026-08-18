@@ -154,6 +154,19 @@ function markStep(step) {
   });
 }
 
+function getLoopStartStep() {
+  const activeSteps = [];
+  studio.pattern.forEach((track) => {
+    track.forEach((isOn, step) => {
+      if (isOn) activeSteps.push(step);
+    });
+  });
+
+  if (!activeSteps.length) return 0;
+  const lastStep = Math.max(...activeSteps);
+  return ((Math.floor(lastStep / 4) + 1) % 4) * 4;
+}
+
 function playStep() {
   studio.currentStep = (studio.currentStep + 1) % 16;
   markStep(studio.currentStep);
@@ -180,7 +193,7 @@ function toggleLoop() {
     return;
   }
   studio.playing = true;
-  studio.currentStep = -1;
+  studio.currentStep = getLoopStartStep() - 1;
   document.querySelector('.studio-play').textContent = 'Pause';
   document.querySelector('.transport-light').classList.add('is-on');
   updateStatus('Loop running');
@@ -197,58 +210,87 @@ function createPiano() {
     button.innerHTML = `<span>${note}</span><kbd>${key.toUpperCase()}</kbd>`;
     button.addEventListener('pointerdown', (event) => {
       event.preventDefault();
+      button.setPointerCapture?.(event.pointerId);
       startNote(note, button);
     });
-    button.addEventListener('pointerup', () => releaseNote(note, button));
-    button.addEventListener('pointerleave', () => releaseNote(note, button));
+    button.addEventListener('pointerup', (event) => {
+      if (button.hasPointerCapture?.(event.pointerId)) {
+        button.releasePointerCapture?.(event.pointerId);
+      }
+      releaseNote(note, button);
+    });
+    button.addEventListener('pointerleave', (event) => {
+      if (button.hasPointerCapture?.(event.pointerId)) return;
+      if (event.pressure === 0 || event.buttons === 0) {
+        releaseNote(note, button);
+      }
+    });
+    button.addEventListener('pointercancel', (event) => {
+      if (button.hasPointerCapture?.(event.pointerId)) {
+        button.releasePointerCapture?.(event.pointerId);
+      }
+      releaseNote(note, button);
+    });
     piano.appendChild(button);
   });
 }
 
-function startNote(note, button) {
+async function unlockStudioAudio() {
+  const audio = getStudioAudio();
+  if (!audio) return false;
+  if (audio.state === 'suspended') await audio.resume();
+  return true;
+}
+
+async function startNote(note, button) {
   if (studio.heldNotes.has(note)) return;
+  const audioReady = await unlockStudioAudio();
+  if (!audioReady) return;
   const frequencies = { C4: 261.63, 'C#4': 277.18, D4: 293.66, 'D#4': 311.13, E4: 329.63, F4: 349.23, 'F#4': 369.99, G4: 392, 'G#4': 415.3, A4: 440, 'A#4': 466.16, B4: 493.88, C5: 523.25 };
-  const synths = {
-    lead: ['sawtooth', 0.08, 3200],
-    pad: ['sine', 0.1, 900],
-    pluck: ['triangle', 0.11, 1800],
-    web: ['square', 0.055, 2400],
-    sakura: ['sine', 0.075, 4200],
-    noir: ['sawtooth', 0.1, 520],
-  };
-  const [wave, volume, filter] = synths[studio.synth];
   if (studio.pianoSource === 'sample' && studio.sampleBuffer) {
     playSampleChop(note, button);
-  } else {
-    const audio = getStudioAudio();
-    if (!audio) return;
-    const oscillator = audio.createOscillator();
-    const gain = audio.createGain();
-    const start = audio.currentTime;
-    oscillator.type = wave;
-    const noteFrequency = studio.synth === 'noir' ? frequencies[note] * 0.5 : frequencies[note];
-    oscillator.frequency.setValueAtTime(noteFrequency, start);
-    gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(volume, start + 0.025);
-    if (filter) {
-      const filterNode = audio.createBiquadFilter();
-      filterNode.type = 'lowpass';
-      filterNode.frequency.value = filter;
-      gain.connect(filterNode);
-      filterNode.connect(studio.master);
-      studio.heldNotes.set(note, { oscillator, gain, filterNode });
-    } else {
-      gain.connect(studio.master);
-      studio.heldNotes.set(note, { oscillator, gain });
-    }
-    oscillator.start(start);
+    return;
   }
+
+  const audio = getStudioAudio();
+  const noteFrequency = frequencies[note];
+  const primary = audio.createOscillator();
+  const harmonic = audio.createOscillator();
+  const gain = audio.createGain();
+  const filterNode = audio.createBiquadFilter();
+  const outputNode = studio.master ?? audio.destination;
+  const start = audio.currentTime;
+
+  primary.type = 'triangle';
+  harmonic.type = 'sine';
+
+  primary.frequency.setValueAtTime(noteFrequency, start);
+  harmonic.frequency.setValueAtTime(noteFrequency * 2, start);
+
+  filterNode.type = 'lowpass';
+  filterNode.frequency.value = 6200;
+  filterNode.Q.value = 0.65;
+
+  gain.gain.setValueAtTime(0.0001, start);
+  gain.gain.exponentialRampToValueAtTime(0.85, start + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.22, start + 0.2);
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + 1.1);
+
+  primary.connect(gain);
+  harmonic.connect(gain);
+  gain.connect(filterNode);
+  filterNode.connect(outputNode);
+
+  primary.start(start);
+  harmonic.start(start);
+  studio.heldNotes.set(note, { oscillator: primary, extraOscillators: [harmonic], gain, filterNode });
   button.classList.add('is-pressed');
 }
 
-function playSampleChop(note, button) {
+async function playSampleChop(note, button) {
   const audio = getStudioAudio();
   if (!audio || !studio.sampleBuffer) return;
+  if (audio.state === 'suspended') await audio.resume();
   const noteIndex = pianoNotes.findIndex(([name]) => name === note);
   const source = audio.createBufferSource();
   const gain = audio.createGain();
@@ -267,11 +309,17 @@ function playSampleChop(note, button) {
 
 function releaseNote(note, button) {
   const voice = studio.heldNotes.get(note);
-  if (!voice) return;
+  if (!voice) {
+    button?.classList.remove('is-pressed');
+    return;
+  }
   const now = studio.audio?.currentTime ?? 0;
   if (voice.gain) {
     voice.gain.gain.cancelScheduledValues(now);
     voice.gain.gain.setTargetAtTime(0.0001, now, 0.045);
+  }
+  if (voice.extraOscillators?.length) {
+    voice.extraOscillators.forEach((osc) => osc.stop(now + 0.18));
   }
   if (voice.oscillator) voice.oscillator.stop(now + 0.18);
   if (voice.source && voice.sample) voice.source.stop(now + 0.18);
@@ -375,9 +423,15 @@ function initStudio() {
   document.querySelector('.sample-play').addEventListener('click', () => studio.sample?.play());
   document.querySelector('.sample-record').addEventListener('click', startRecording);
   document.querySelector('.sample-stop').addEventListener('click', stopRecording);
+  document.addEventListener('pointerdown', () => {
+    unlockStudioAudio();
+  }, { passive: true });
   document.addEventListener('keydown', (event) => {
     const match = pianoNotes.find(([, key]) => key === event.key.toLowerCase());
-    if (match && !event.repeat) startNote(match[0], document.querySelector(`[data-note="${match[0]}"]`));
+    if (match && !event.repeat) {
+      unlockStudioAudio();
+      startNote(match[0], document.querySelector(`[data-note="${match[0]}"]`));
+    }
   });
   document.addEventListener('keyup', (event) => {
     const match = pianoNotes.find(([, key]) => key === event.key.toLowerCase());

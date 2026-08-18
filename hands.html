@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hand-tracked Sunflowers</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #071021; color: #fff; }
+    main { padding: 18px; max-width: 1200px; margin: 0 auto; }
+    canvas.output_canvas { width: 100%; height: auto; display: block; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+    .controls { position: fixed; left: 12px; top: 12px; background: rgba(0,0,0,0.45); color: #fff; padding: 10px 12px; border-radius: 8px; font-family: system-ui,Segoe UI,Roboto; font-size: 13px }
+    .header-text { color: #fff; text-decoration: none }
+  </style>
+</head>
+
+<body>
+  <header>
+    <a href="index.html" class="header-text">Spider-Noir</a>
+  </header>
+
+  <main>
+    <h1>Hand-tracked Sunflowers</h1>
+    <p>Right hand: spread fingers → more flowers. Left hand: spread fingers → age flowers faster (close fingers to reverse).</p>
+
+    <video class="input_video" autoplay muted playsinline></video>
+    <canvas class="output_canvas"></canvas>
+    <div class="controls" id="debug">Initializing...</div>
+    <div id="hud" style="position:fixed; left:12px; bottom:12px; background:rgba(0,0,0,0.45); color:#fff; padding:10px; border-radius:8px; font-family:Segoe UI,Roboto; z-index:50; max-width:320px;">
+      <div style="font-weight:600; margin-bottom:6px">Sunflower Hand Studio</div>
+      <div style="font-size:13px; margin-bottom:6px">Right hand: thumb+index spread → spawn flowers at your thumb. Left hand: thumb+index spread → age flowers (close to revive).</div>
+      <div style="display:flex; gap:8px; align-items:center; font-size:13px"><div id="fps">FPS: —</div><div id="status">Status: —</div></div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="hands.js" defer></script>
+</body>
+
+</html>
